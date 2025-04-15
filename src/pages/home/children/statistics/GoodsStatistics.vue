@@ -1,6 +1,5 @@
 <template>
   <div class='goodsStatistics' ref="goodsStatistics">
-    <h1>goodsStatistics</h1>
   </div>
 </template>
 

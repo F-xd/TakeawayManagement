@@ -9,6 +9,7 @@ import { useRouter } from 'vue-router';
 import axios from '@axios';
 import { useAccountInfoStore } from './stores/accountinfo';
 const router = useRouter();
+router.push('/home');
 router.beforeEach(async (to, from, next) => {
   if(to.path !== '/login'){
     try{

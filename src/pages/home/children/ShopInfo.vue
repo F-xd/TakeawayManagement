@@ -1,7 +1,7 @@
 <template>
   <div class='shopInfo'>
-    <Title title="账号列表">
-      <el-button type="primary" size="large" @click="()=>{handleEdit('','', false,true)}">保存店铺信息</el-button>
+    <Title title="店铺管理">
+      <el-button type="primary" size="large" @click="()=>{handleEdit()}">保存店铺信息</el-button>
     </Title>
     <div class="container">
       <el-form ref="ruleFormRef" :model="form" label-width="auto" class="demo-ruleForm">
@@ -9,19 +9,39 @@
           <el-input v-model="form.name" type="text" />
         </el-form-item>
         <el-form-item label="店铺公告" prop="bulletin">
-          <el-input v-model="form.bulletin" type="textarea" />
+          <el-input autosize v-model="form.bulletin" type="textarea" />
         </el-form-item>
         <el-form-item label="店铺头像" prop="avatar">
           <el-upload
             class="avatar-uploader"
             :action="axios.defaults.baseURL + '/shop/upload'"
             :show-file-list="false"
-            :on-success="handleAvatarSuccess"
+            :on-success="(a,b,c)=>handleAvatarSuccess(a,b,c,true)"
           >
             <img v-if="form.avatar" :src="axios.defaults.baseURL + form.avatar" class="avatar" />
             <el-icon v-else class="avatar-uploader-icon" color="#8c939d" size="40"><Plus/></el-icon>
           </el-upload>
         </el-form-item>
+
+
+        <el-form-item label="店铺图片" prop="minPrice">
+          <el-upload
+            v-model:file-list="fileList"
+            :action="axios.defaults.baseURL + '/shop/upload'"
+            list-type="picture-card"
+            :on-preview="handlePictureCardPreview"
+            :on-success="(a,b,c)=>handleAvatarSuccess(a,b,c,false)"
+            :on-remove="handleAvatarRemove"
+          >
+            <el-icon><Plus /></el-icon>
+          </el-upload>
+
+          <el-dialog v-model="dialogVisible">
+            <img w-full :src="dialogImageUrl" alt="Preview Image" />
+          </el-dialog>
+        </el-form-item>
+
+
         <el-form-item label="起送价格" prop="deliveryPrice">
           <el-input v-model="form.deliveryPrice" type="number" placeholder="请输入起送价格" autocomplete="off" />
         </el-form-item>
@@ -29,7 +49,7 @@
           <el-input v-model="form.deliveryTime" type="text" placeholder="请输入送达时间" autocomplete="off" />
         </el-form-item>
         <el-form-item label="配送描述" prop="description">
-          <el-input v-model="form.description" type="textarea" placeholder="请输入配送描述" autocomplete="off" />
+          <el-input autosize v-model="form.description" type="textarea" placeholder="请输入配送描述" autocomplete="off" />
         </el-form-item>
         <el-form-item label="店铺好评率" prop="score">
           <el-input v-model="form.score" type="number" placeholder="请输入店铺好评率" autocomplete="off" />
@@ -64,7 +84,9 @@ import { ref, reactive } from 'vue';
 import Title from '../../../components/Title.vue';
 import axios from '@axios';
 import { Plus } from '@element-plus/icons-vue'
-
+import { ElMessage } from 'element-plus'
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
 const form = reactive({
   id:'',
   name:'',
@@ -80,29 +102,49 @@ const form = reactive({
   date:[],
   pics:[]
 })
+const fileList = reactive([]);
 
 
 // 获取数据
 const getData = async () => {
   const { data:{data} } = await axios.get('/shop/info');
   Object.assign(form, data);
-  form.supports = [];
-  form.date = [];
+  fileList.splice(0, fileList.length);
+  fileList.push(...form.pics.map((item,index)=>({name:index,url:axios.defaults.baseURL + item})))
 }
 getData();
 
 // 上传图片成功回调
-const handleAvatarSuccess = (res, file, fileList) => {
-  form.avatar = res.imgUrl;
-  console.log(form);
+const handleAvatarSuccess = (res, file, fileList,isAvatar=false) => {
+  if(isAvatar){
+    form.avatar = res.imgUrl;
+  }else{
+    form.pics.push(res.imgUrl);
+  }
 }
-
+const handleAvatarRemove = (file, fileList)=>{
+  form.pics.splice(fileList.indexOf(file),1);
+}
 
 // 保存店铺信息
 const handleEdit = async(from)=>{
-  const {data} = await axios.post('/shop/edit', form);
-  console.log(data);
+  const {data} = await axios.post('/shop/edit', Object.assign({...form},{
+    avatar:form.avatar.slice(13),
+    date:JSON.stringify(form.date),
+    pics:JSON.stringify(form.pics.map(item=>item.slice(13))),
+    supports:JSON.stringify(form.supports)
+  }));
+  if(data.code === 0){
+    ElMessage.success('保存成功');
+  }
+  getData();
 }
+
+const handlePictureCardPreview = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url
+  dialogVisible.value = true
+}
+
 </script>
 
 <style lang='less' scoped>
@@ -110,8 +152,8 @@ const handleEdit = async(from)=>{
   padding: 15px;
 }
 .avatar-uploader {
-  width: 200px;
-  height: 200px;
+  width: 150px;
+  height: 150px;
   border: 2px dashed #d9d9d9;
   display: flex;
   justify-content: center;

@@ -23,10 +23,10 @@ import OrderList from '@/pages/home/children/OrderList.vue';
 import ShopInfo from '@/pages/home/children/ShopInfo.vue';
 
 // // 5. 首页组件
-import Home from '@/pages/home/Home.vue';
+// import Home from '@/pages/home/Home.vue';
 
 // 6. 登录组件
-import Login from '@/pages/login/Login.vue';
+// import Login from '@/pages/login/Login.vue';
 
 const routes = [
     {
@@ -35,7 +35,7 @@ const routes = [
     },
     {
         path: '/home',
-        component: Home,
+        component: () => import('@/pages/home/Home.vue'),
         children: [
             {
                 path: '/accountAdd',
@@ -106,7 +106,7 @@ const routes = [
     },
     {
         path: '/login',
-        component: Login,
+        component: () => import('@/pages/login/Login.vue'),
         name: 'Login',
     },
 ];
