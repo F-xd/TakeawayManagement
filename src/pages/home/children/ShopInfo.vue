@@ -102,15 +102,18 @@ const form = reactive({
   date:[],
   pics:[]
 })
-const fileList = reactive([]);
+const fileList = ref([]);
 
 
 // 获取数据
 const getData = async () => {
   const { data:{data} } = await axios.get('/shop/info');
   Object.assign(form, data);
-  fileList.splice(0, fileList.length);
-  fileList.push(...form.pics.map((item,index)=>({name:index,url:axios.defaults.baseURL + item})))
+  fileList.value = []; // 直接赋值（ref 允许通过 .value 修改）
+  fileList.value.push(...form.pics.map((item, index) => ({
+    name: index,
+    url: axios.defaults.baseURL + item
+  })));
 }
 getData();
 
@@ -122,15 +125,18 @@ const handleAvatarSuccess = (res, file, fileList,isAvatar=false) => {
     form.pics.push(res.imgUrl);
   }
 }
-const handleAvatarRemove = (file, fileList)=>{
-  form.pics.splice(fileList.indexOf(file),1);
+const handleAvatarRemove = (file)=>{
+  console.log(file.name)
+  form.pics.splice(file.name,1);
 }
 
 // 保存店铺信息
 const handleEdit = async(from)=>{
+  console.log(form.pics.map(item=>item.slice(13)));
   const {data} = await axios.post('/shop/edit', Object.assign({...form},{
     avatar:form.avatar.slice(13),
     date:JSON.stringify(form.date),
+    
     pics:JSON.stringify(form.pics.map(item=>item.slice(13))),
     supports:JSON.stringify(form.supports)
   }));
