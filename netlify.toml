@@ -3,7 +3,7 @@
   publish = "dist"
 
 [[redirects]]
-  from = "/api*"
+  from = "/api/*"
   to = "http://8.137.157.16:9002/:splat"
   status = 200
   force = true
