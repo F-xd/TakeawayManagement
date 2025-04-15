@@ -12,6 +12,7 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import axios from '@axios';
+import {setToken} from '@axios'
 import { ElMessage } from 'element-plus'
 import { useRouter } from 'vue-router';
 const router = useRouter();
@@ -29,7 +30,7 @@ const login = async()=>{
     password.value='';
     return;
   }
-  localStorage.setItem('token',data.token);
+  setToken(data.token);
   localStorage.setItem('id',data.id);
   ElMessage.success('登录成功');
   router.push('/home');

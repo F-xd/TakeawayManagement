@@ -13,6 +13,9 @@ router.push('/home');
 router.beforeEach(async (to, from, next) => {
   if(to.path !== '/login'){
     try{
+      const token = localStorage.getItem('token');
+      const userId = localStorage.getItem('id');
+      if (!token || !userId) throw new Error('Missing credentials');
       const {data} = await axios.get('/users/checktoken?token='+localStorage.getItem('token'));
       if(data.code !== 0){
         throw new Error('token失效');
