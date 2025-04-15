@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d dist -r https://github.com/F-xd/TakeawayManagement.git -b gh-pages"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.2.1",
+    "gh-pages": "^6.3.0",
     "less": "^4.3.0",
     "vite": "^6.2.0"
   }
