@@ -7,3 +7,24 @@
   to = "http://8.137.157.16:9002/:splat"
   status = 200
   force = true
+
+# 同样的规则，用于重定向 /upload/imgs/acc_img/ 下的图片请求。
+[[redirects]]
+  from = "/upload/imgs/acc_img/*"
+  to = "http://8.137.157.16:9002/upload/imgs/acc_img/:splat"
+  status = 200
+  force = true
+
+# 同样的规则，用于重定向 /upload/imgs/goods_img/ 下的图片请求。
+[[redirects]]
+  from = "/upload/imgs/goods_img/*"
+  to = "http://8.137.157.16:9002/upload/imgs/goods_img/:splat"
+  status = 200
+  force = true
+
+  # 同样的规则，用于重定向 /upload/shop/ 下的图片请求。
+[[redirects]]
+  from = "/upload/shop/*"
+  to = "http://8.137.157.16:9002/upload/shop/:splat"
+  status = 200
+  force = true
