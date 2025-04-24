@@ -127,26 +127,26 @@ import { useAccountInfoStore } from '../stores/accountinfo';
 import axios from '@axios';
 // 登录验证
 router.beforeEach(async (to, from, next) => {
-    if(to.path !== '/login'){
-      try{
-        const token = localStorage.getItem('token');
-        const userId = localStorage.getItem('id');
-        if (!token || !userId) throw new Error('Missing credentials');
-        const {data} = await axios.get('/users/checktoken?token='+localStorage.getItem('token'));
-        if(data.code !== 0){
-          throw new Error('token失效');
+    if (to.path !== '/login') {
+        try {
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('id');
+            if (!token || !userId) throw new Error('Missing credentials');
+            const { data } = await axios.get('/users/checktoken?token=' + localStorage.getItem('token'));
+            if (data.code !== 0) {
+                throw new Error('token失效');
+            }
+            else {
+                const { data } = await axios.get('/users/accountinfo?id=' + localStorage.getItem('id'));
+                useAccountInfoStore().setAccountInfo(data.accountInfo);
+            }
         }
-        else{
-          const {data} = await axios.get('/users/accountinfo?id='+localStorage.getItem('id'));
-          useAccountInfoStore().setAccountInfo(data.accountInfo);
+        catch (e) {
+            console.error(e);
+            next('/login');
+            return;
         }
-      }
-      catch(e){
-        console.error(e);
-        next('/login');
-        return;
-      }
     }
     next();
-  })
+})
 export default router;
