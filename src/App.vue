@@ -9,30 +9,9 @@ import { useRouter } from 'vue-router';
 import axios from '@axios';
 import { useAccountInfoStore } from './stores/accountinfo';
 const router = useRouter();
+// 自动访问首页
 router.push('/home');
-router.beforeEach(async (to, from, next) => {
-  if(to.path !== '/login'){
-    try{
-      const token = localStorage.getItem('token');
-      const userId = localStorage.getItem('id');
-      if (!token || !userId) throw new Error('Missing credentials');
-      const {data} = await axios.get('/users/checktoken?token='+localStorage.getItem('token'));
-      if(data.code !== 0){
-        throw new Error('token失效');
-      }
-      else{
-        const {data} = await axios.get('/users/accountinfo?id='+localStorage.getItem('id'));
-        useAccountInfoStore().setAccountInfo(data.accountInfo);
-      }
-    }
-    catch(e){
-      console.error(e);
-      next('/login');
-      return;
-    }
-  }
-  next();
-})
+
 </script>
 
 <style lang='less' scoped>
