@@ -21,6 +21,7 @@ import GoodsStatistics from '@/pages/home/children/statistics/GoodsStatistics.vu
 import OrderStatistics from '@/pages/home/children/statistics/OrderStatistics.vue';
 import OrderList from '@/pages/home/children/OrderList.vue';
 import ShopInfo from '@/pages/home/children/ShopInfo.vue';
+import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs';
 
 // // 5. 首页组件
 // import Home from '@/pages/home/Home.vue';
@@ -28,6 +29,7 @@ import ShopInfo from '@/pages/home/children/ShopInfo.vue';
 // 6. 登录组件
 // import Login from '@/pages/login/Login.vue';
 
+import Error from '../pages/error/Error.vue';
 const routes = [
     {
         path: '/',
@@ -109,6 +111,11 @@ const routes = [
         component: () => import('@/pages/login/Login.vue'),
         name: 'Login',
     },
+    {
+        // 404页面
+        path: '/:pathMatch(.*)*',
+        component: Error
+    }
 ];
 
 const router = createRouter({
