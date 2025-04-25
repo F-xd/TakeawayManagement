@@ -11,5 +11,15 @@ export default defineConfig({
       '@': '/src',
       '@axios':'/src/utils/axios.js'
     }
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://8.137.157.16:9002',
+        changeOrigin: true,
+        rewrite: (path) => path.replace('/api', '')
+      }
+    }
   }
+
 })
